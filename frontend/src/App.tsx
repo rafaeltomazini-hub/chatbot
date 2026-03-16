@@ -9,15 +9,20 @@ import {
   MoreVertical,
   Trash2,
   Paperclip,
-  Smile,
-  Mic,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { verifyHealthStatus } from "./services/verifyHealthStatus";
 
 interface Message {
   id: string;
@@ -48,6 +53,17 @@ function App() {
     }
   }, [messages]);
 
+  const [backendHealthy, setBackendHealthy] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkHealth = async () => {
+      const status = await verifyHealthStatus();
+      setBackendHealthy(status);
+    };
+
+    checkHealth();
+  }, []);
+
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -67,7 +83,9 @@ function App() {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "ai",
-        text: "This is a simulated response from your back-end. I received: " + userMessage.text,
+        text:
+          "This is a simulated response from your back-end. I received: " +
+          userMessage.text,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiMessage]);
@@ -85,7 +103,7 @@ function App() {
                 <Bot className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <CardTitle className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <CardTitle className="text-lg font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   AI Assistant
                 </CardTitle>
                 <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
@@ -95,13 +113,25 @@ function App() {
               </div>
             </div>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-slate-400"
+              >
                 <Search className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-slate-400"
+              >
                 <Trash2 className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-slate-400"
+              >
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </div>
@@ -118,7 +148,7 @@ function App() {
                     "flex w-max max-w-[80%] flex-col gap-2 rounded-2xl px-4 py-2 text-sm shadow-sm transition-all animate-in fade-in slide-in-from-bottom-2",
                     message.role === "user"
                       ? "ml-auto bg-blue-600 text-white rounded-tr-none"
-                      : "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-100 dark:border-slate-700 rounded-tl-none"
+                      : "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-100 dark:border-slate-700 rounded-tl-none",
                   )}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -133,7 +163,10 @@ function App() {
                   </div>
                   <p className="leading-relaxed">{message.text}</p>
                   <span className="text-[10px] self-end opacity-50 mt-1">
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {message.timestamp.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </span>
                 </div>
               ))}
@@ -150,13 +183,17 @@ function App() {
         <CardFooter className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
           <div className="flex w-full items-center gap-2 relative">
             <div className="absolute left-2 flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-blue-500">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-slate-400 hover:text-blue-500"
+              >
                 <Paperclip className="w-4 h-4" />
               </Button>
             </div>
             <Input
               placeholder="Type your message here..."
-              className="flex-1 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500 pl-11 pr-24 h-11 rounded-xl shadow-inner transition-all hover:bg-slate-50 dark:hover:bg-slate-750"
+              className="flex-1 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500 pl-11 pr-24 h-11 rounded-xl shadow-inner transition-all hover:bg-slate-50 dark:hover:bg-slate-750 placeholder:text-white focus:placeholder:text-black"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -166,16 +203,9 @@ function App() {
                 }
               }}
             />
-            <div className="absolute right-12 flex items-center gap-1">
-               <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-blue-500">
-                <Smile className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-blue-500">
-                <Mic className="w-4 h-4" />
-              </Button>
-            </div>
-            <Button 
-              size="icon" 
+
+            <Button
+              size="icon"
               className="h-10 w-10 bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-500/20 active:scale-95 transition-all rounded-xl"
               onClick={handleSend}
               disabled={isLoading || !input.trim()}
@@ -191,7 +221,8 @@ function App() {
       </Card>
       <div className="mt-8 text-center animate-bounce">
         <p className="text-slate-400 text-sm flex items-center justify-center gap-2 font-medium">
-          Built with <span className="text-red-500">❤</span> using Shadcn & Tailwind
+          Built with <span className="text-red-500">❤</span> using Shadcn &
+          Tailwind
         </p>
       </div>
     </div>
