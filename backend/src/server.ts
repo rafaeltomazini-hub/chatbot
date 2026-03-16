@@ -27,11 +27,13 @@ app.get("/health", validateSessionData, (req, res) => {
 // Initialize Database and Start the server
 AppDataSource.initialize()
   .then(() => {
+    console.log("------------------------------");
     console.log("Data Source has been initialized!");
     app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
+    console.log("------------------------------");
     console.error("Error during Data Source initialization:", err);
   });

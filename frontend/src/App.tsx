@@ -51,7 +51,7 @@ function App() {
 
   return (
     <div className="chat-container">
-      <h1>AI Chatbot</h1>
+      <h1 className="text-2xl">AI Chatbot</h1>
       <div className="messages-list">
         {messages.length === 0 && (
           <p style={{ opacity: 0.5 }}>Start a conversation...</p>
